@@ -3,7 +3,7 @@
 
 
 # IN PROGRESS
-* Understand the Current Implementation
+* Understand high level Current Implementation
 
 # DONE
 
