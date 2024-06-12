@@ -2,6 +2,7 @@ import torch
 # import spectograms module
 from mt3 import spectrograms
 import numpy as np
+from mt3 import preprocessor
 
 SAMPLE_RATE = 16000
 
@@ -10,15 +11,24 @@ class InferenceModel(object):
 
     def __init__(self, model_path=None):
         self.spectrogram_config = spectrograms.SpectogramConfig()
+        self.inputs_length = 256
+        self.sequence_length = {
+            'inputs': self.inputs_length,
+            # 'outputs': 2048
+        }
         # self.model = torch.jit.load(model_path)
         # self.model.eval()
 
     def __call__(self, audio):
         ds = self.audio_to_dataset(audio)
+        ds = self.preprocess(ds)
 
     def audio_to_dataset(self, audio):
         frames, frame_times = self._audio_to_frames(audio)
-        print(frames.shape)
+        return {
+            'inputs': frames,
+            'input_times': frame_times
+        }
         
     def _audio_to_frames(self, audio):
         """Compute spectrogram frames from audio."""
@@ -30,3 +40,10 @@ class InferenceModel(object):
         num_frames = len(audio) // frame_size
         frame_times = np.arange(num_frames) / self.spectrogram_config.frames_per_second
         return frames, frame_times
+    
+    def preprocess(self, ds):
+        """Preprocess audio for model inference."""
+        print(ds)
+        ds = preprocessor.split_tokens_to_inputs_length(ds, self.sequence_length)
+        ds = preprocessor.compute_spectrograms(ds, self.spectrogram_config)
+        return ds

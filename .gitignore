@@ -1,2 +1,4 @@
 .eggs/
 myenv/
+*.pyc
+scratch.py
