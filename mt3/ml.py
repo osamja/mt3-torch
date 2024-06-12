@@ -1,8 +1,7 @@
-import torch
-# import spectograms module
 from mt3 import spectrograms
 import numpy as np
 from mt3 import preprocessor
+import librosa
 
 SAMPLE_RATE = 16000
 
@@ -11,7 +10,7 @@ class InferenceModel(object):
 
     def __init__(self, model_path=None):
         self.spectrogram_config = spectrograms.SpectogramConfig()
-        self.inputs_length = 256
+        self.inputs_length = self.spectrogram_config.input_length
         self.sequence_length = {
             'inputs': self.inputs_length,
             # 'outputs': 2048
@@ -20,6 +19,9 @@ class InferenceModel(object):
         # self.model.eval()
 
     def __call__(self, audio):
+        split_audio_filenames = preprocessor.split_audio_segments(audio, chunk_length_ms=6000, num_chunks=1, sample_rate=SAMPLE_RATE)
+        audio_filename = split_audio_filenames[0]
+        audio, sr = librosa.load(audio_filename, sr=16000)
         ds = self.audio_to_dataset(audio)
         ds = self.preprocess(ds)
 

@@ -6,6 +6,7 @@ from librosa import filters
 DEFAULT_HOP_WIDTH = 128
 DEFAULT_SAMPLE_RATE = 16000
 DEFAULT_NUM_MEL_BINS = 512
+DEFAULT_INPUT_LENGTH = 256
 
 # Constants for spectrogram computation
 FFT_SIZE = 2048
@@ -17,6 +18,7 @@ class SpectogramConfig:
     num_mel_bins: int = DEFAULT_NUM_MEL_BINS
     fft_size: int = FFT_SIZE
     mel_lo_hz: float = MEL_LO_HZ
+    input_length: int = DEFAULT_INPUT_LENGTH
 
     @property
     def frames_per_second(self):
@@ -91,6 +93,9 @@ def compute_spectrogram(samples, spectrogram_config):
 
     # Ensure resulting spectrogram has desired shape
     mel_spectrogram = mel_spectrogram.squeeze(0)  # Remove batch dimension if present
+
+    # trim to input_length
+    mel_spectrogram = mel_spectrogram[:spectrogram_config.input_length]
 
     return mel_spectrogram
 
