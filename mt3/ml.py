@@ -2,6 +2,7 @@ from mt3 import spectrograms
 import numpy as np
 from mt3 import preprocessor
 import librosa
+import matplotlib.pyplot as plt
 
 SAMPLE_RATE = 16000
 
@@ -46,6 +47,20 @@ class InferenceModel(object):
     def preprocess(self, ds):
         """Preprocess audio for model inference."""
         print(ds)
+        sr = self.spectrogram_config.sample_rate
+        audio = ds['inputs']
+
+
         ds = preprocessor.split_tokens_to_inputs_length(ds, self.sequence_length)
         ds = preprocessor.compute_spectrograms(ds, self.spectrogram_config)
+        num_segments = len(ds)
+        # Create a figure with num_segments subplots
+        fig, axs = plt.subplots(num_segments, 1, figsize=(10, 15))
+        
+        # Plot the first 5 segments in the subplots
+        for i in range(num_segments):
+            spectrograms.plot_spectrogram(ds[i]['inputs'].T, axs[i], sample_rate=sr, title=f'Spectrogram {i+1}')
+
+        plt.tight_layout()
+        plt.show()
         return ds

@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torchaudio.transforms as transforms
 from librosa import filters
+import matplotlib.pyplot as plt
 
 DEFAULT_HOP_WIDTH = 128
 DEFAULT_SAMPLE_RATE = 16000
@@ -99,3 +100,11 @@ def compute_spectrogram(samples, spectrogram_config):
 
     return mel_spectrogram
 
+def plot_spectrogram(spectrogram, ax, sample_rate, title=None):
+    """Plot the spectrogram."""
+    im = ax.imshow(spectrogram, aspect='auto', origin='lower', interpolation='none')
+    ax.set_xlabel('Time (frames)')
+    ax.set_ylabel('Frequency (bins)')
+    if title:
+        ax.set_title(title)
+    plt.colorbar(im, ax=ax)

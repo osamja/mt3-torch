@@ -6,8 +6,7 @@ songs = [
     'datasets/relaxing-piano-201831.mp3',
 ]
 
-piano_song = songs[0]
-audio, sr = librosa.load(piano_song, sr=16000)
+audio, sr = librosa.load(songs[0], sr=16000)
 print(audio.shape, sr)
 model = ml.InferenceModel()
 # dataset = model.audio_to_dataset(audio)
