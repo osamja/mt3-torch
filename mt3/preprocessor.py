@@ -48,7 +48,7 @@ def compute_spectrograms(ds, spectrogram_config):
 def split_audio_segments(audio, sample_rate, chunk_length_ms=2000, num_chunks=5):
     """Split the audio file into segments of chunk_length_ms and save them as AudioChunk objects."""
 
-    split_filenames = []
+    split_audio = []
 
     # Length of the audio in milliseconds
     length_ms = len(audio) / sample_rate * 1000
@@ -66,17 +66,11 @@ def split_audio_segments(audio, sample_rate, chunk_length_ms=2000, num_chunks=5)
 
         # Extract the chunk
         chunk = audio[start_sample:end_sample]
-        # Save the chunk as a separate file
-        chunk_name = f"{file_counter}.wav"
-        
-        # Use scipy to save the numpy array as a WAV file
-        wav.write(chunk_name, sample_rate, chunk.astype(np.int16))
-        
-        split_filenames.append(chunk_name)
+        split_audio.append(chunk)
 
         # Move to the next chunk
         start_ms = end_ms
         end_ms += chunk_length_ms
         file_counter += 1
 
-    return split_filenames
+    return split_audio

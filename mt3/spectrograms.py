@@ -108,3 +108,4 @@ def plot_spectrogram(spectrogram, ax, sample_rate, title=None):
     if title:
         ax.set_title(title)
     plt.colorbar(im, ax=ax)
+    # plt.show()
